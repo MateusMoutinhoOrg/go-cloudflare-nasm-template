@@ -7,7 +7,7 @@ import (
 	"io"
 	"syscall/js"
 
-	"github.com/mateusmoutinho/test-go-nasm-cloudflare/deps"
+	"github.com/MateusMoutinhoOrg/go-cloudflare-nasm-template/deps"
 )
 
 // newHTTPClient implements deps.HTTPClient on top of JavaScript's fetch

@@ -2,17 +2,32 @@
 
 **Go web server template — Cloudflare Worker + SQLite**
 
-go-cloudflare-nasm-template is a template for writing a web server in Go. Your code is
-compiled to WebAssembly and runs in a Cloudflare Worker, with SQLite
+> [!WARNING]
+> **This project is an experiment and will never have a stable version.**
+> Anything in it may change or break without notice. If you build on it, treat
+> your fork as your own code.
+
+go-cloudflare-nasm-template is a template for writing a web server in Go. Your
+code is compiled to WebAssembly and runs in a Cloudflare Worker, with SQLite
 databases.
 
 Fork it, rename it and write your server in `sandbox/`.
+
+- [Getting started](#getting-started)
+- [Writing your server](#writing-your-server)
+- [Building and testing](#building-and-testing)
+- [Scripts](#scripts)
+- [Deploying to Cloudflare](#deploying-to-cloudflare)
+- [Running on your own machine (systemd)](#running-on-your-own-machine-systemd)
+- [Where everything is](#where-everything-is)
+- [License](#license)
 
 ## Getting started
 
 You need `git` and Python 3.9 or newer, on Linux or macOS.
 
-1. **Fork** this repository (the *Fork* button on GitHub) and clone your fork:
+1. **Fork** [this repository](https://github.com/MateusMoutinhoOrg/go-cloudflare-nasm-template)
+   (the *Fork* button on GitHub) and clone your fork:
 
    ```sh
    git clone https://github.com/YOUR-USER/YOUR-REPOSITORY.git
@@ -200,8 +215,15 @@ engine/           what makes it run: the Cloudflare Worker and the build
 scripts/          rename, install, run, deploy and manage the server
 wrangler.jsonc    configuration of the Worker
 go.mod            name of the Go module
+LICENSE           the Unlicense
 ```
 
 For each request, the Worker (`engine/js/worker.mjs`) starts the Go program
 (`engine/worker`), which builds the `deps` and calls `SandboxMain`. The sandbox
 imports nothing from `engine/`: it only knows `deps`.
+
+## License
+
+This project is in the public domain, under the [Unlicense](LICENSE): you may
+copy, change, publish and sell it, for any purpose, without asking and without
+giving credit. It comes with no warranty.

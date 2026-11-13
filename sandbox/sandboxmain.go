@@ -27,7 +27,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mateusmoutinho/test-go-nasm-cloudflare/deps"
+	"github.com/MateusMoutinhoOrg/go-cloudflare-nasm-template/deps"
 )
 
 // The frontend. The file is copied into the program when it is compiled.

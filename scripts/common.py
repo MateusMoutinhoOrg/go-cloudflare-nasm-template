@@ -276,7 +276,7 @@ def wait_until_responds(ports, seconds=60, gave_up=lambda port: False):
 
 # ------------------------------------------------------------------ systemd
 
-NAME = "test-go-nasm-cloudflare"  # every systemd unit starts with this name (see rename.py)
+NAME = "go-cloudflare-nasm-template"  # every systemd unit starts with this name (see rename.py)
 
 UNIT_DIR = Path("/etc/systemd/system")
 TEMPLATE_UNIT = UNIT_DIR / f"{NAME}@.service"  # one instance per port: ...@3000.service

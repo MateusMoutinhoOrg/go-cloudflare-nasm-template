@@ -17,8 +17,8 @@ import (
 	"os"
 	"syscall/js"
 
-	"github.com/mateusmoutinho/test-go-nasm-cloudflare/deps"
-	"github.com/mateusmoutinho/test-go-nasm-cloudflare/sandbox"
+	"github.com/MateusMoutinhoOrg/go-cloudflare-nasm-template/deps"
+	"github.com/MateusMoutinhoOrg/go-cloudflare-nasm-template/sandbox"
 )
 
 func main() {

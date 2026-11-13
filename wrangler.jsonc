@@ -3,7 +3,7 @@
 // The Worker code itself is in engine/.
 {
   "$schema": "engine/node_modules/wrangler/config-schema.json",
-  "name": "test-go-nasm-cloudflare",
+  "name": "go-cloudflare-nasm-template",
   "main": "engine/js/worker.mjs",
   "compatibility_date": "2026-10-01",
 

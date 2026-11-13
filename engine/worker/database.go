@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"syscall/js"
 
-	"github.com/mateusmoutinho/test-go-nasm-cloudflare/deps"
+	"github.com/MateusMoutinhoOrg/go-cloudflare-nasm-template/deps"
 )
 
 // newDatabaseHub implements deps.DatabaseHub on top of Cloudflare Durable
