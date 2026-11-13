@@ -1,0 +1,30 @@
+// Cloudflare Worker configuration. It lives at the repository root because
+// that is where Wrangler (and Cloudflare's Git build) looks for it.
+// The Worker code itself is in engine/.
+{
+  "$schema": "engine/node_modules/wrangler/config-schema.json",
+  "name": "test-go-nasm-cloudflare",
+  "main": "engine/js/worker.mjs",
+  "compatibility_date": "2026-10-01",
+
+  // Lets Go know when the client disconnects (Context in deps/server.go).
+  "compatibility_flags": ["enable_request_signal"],
+
+  // Keeps the log of the deployed Worker (what your server prints, and the
+  // reason of every request that fails) in the Cloudflare dashboard.
+  "observability": { "enabled": true },
+
+  // Compiles the Go code to WebAssembly before running/deploying, and does it
+  // again (reloading the Worker) whenever something in these folders changes.
+  "build": {
+    "command": "engine/compile.sh",
+    "watch_dir": ["sandbox", "deps", "engine/worker", "engine/js"]
+  },
+
+  // Databases of the sandbox (DatabaseHub in deps/database.go): each database
+  // id is one Durable Object with its own SQLite (engine/js/database.mjs).
+  "durable_objects": {
+    "bindings": [{ "name": "DATABASES", "class_name": "SandboxDatabase" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SandboxDatabase"] }]
+}

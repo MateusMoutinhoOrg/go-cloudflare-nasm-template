@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linkbox</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%230e7490'/><path d='M11 8h10v16l-5-3.6-5 3.6z' fill='white'/></svg>">
+
+<style>
+  /* Colors: light first, then dark for whoever uses the system in dark mode. */
+  :root {
+    color-scheme: light dark;
+    --page: #f6f5f0;
+    --card: #ffffff;
+    --text: #1c1b18;
+    --muted: #6d6a62;
+    --line: #e3e0d6;
+    --accent: #0e7490;
+    --on-accent: #ffffff;
+    --danger: #b3261e;
+    --shadow: 0 1px 2px rgb(0 0 0 / .04), 0 8px 24px rgb(0 0 0 / .06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page: #131312;
+      --card: #1d1d1b;
+      --text: #efede6;
+      --muted: #a19e95;
+      --line: #31302c;
+      --accent: #5fd0e6;
+      --on-accent: #06242b;
+      --danger: #ff8f85;
+      --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .35);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font: 1rem/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(50rem 22rem at 50% -6rem, color-mix(in srgb, var(--accent) 14%, transparent), transparent) no-repeat,
+      var(--page);
+  }
+  main { max-width: 40rem; margin: 0 auto; padding: 4rem 1.25rem 3rem; }
+  code { font: .88em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Title */
+  h1 { display: flex; align-items: center; gap: .7rem; margin: 0; font-size: 2.25rem; line-height: 1.1; letter-spacing: -.03em; }
+  h1 svg { width: 2.25rem; height: 2.25rem; }
+  .lead { margin: .75rem 0 1.75rem; color: var(--muted); font-size: 1.05rem; text-wrap: pretty; }
+
+  /* The form: the field and the button share one box */
+  form {
+    display: flex; gap: .5rem; padding: .4rem;
+    background: var(--card); border: 1px solid var(--line); border-radius: 1rem;
+    box-shadow: var(--shadow);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  form:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent), var(--shadow);
+  }
+  form input {
+    flex: 1; min-width: 0; padding: .6rem .75rem;
+    border: 0; background: none; color: inherit; font: inherit; font-size: 1.05rem;
+  }
+  form input:focus-visible { outline: 0; } /* the whole box lights up instead */
+  form input::placeholder { color: var(--muted); opacity: .75; }
+  form button {
+    padding: .6rem 1.25rem; border: 0; border-radius: .7rem;
+    background: var(--accent); color: var(--on-accent); font: inherit; font-weight: 600; cursor: pointer;
+  }
+  form button:hover { filter: brightness(1.1); }
+  form button:disabled { opacity: .6; cursor: progress; }
+
+  /* Addresses to try with one click */
+  .examples { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: .9rem 0 0; color: var(--muted); font-size: .9rem; }
+  .examples button {
+    padding: .15rem .7rem; border: 1px solid var(--line); border-radius: 99px;
+    background: none; color: inherit; font: inherit; cursor: pointer;
+  }
+  .examples button:hover { color: var(--accent); border-color: currentColor; }
+
+  #message { min-height: 1.5rem; margin: .75rem 0 0; color: var(--danger); font-size: .95rem; overflow-wrap: anywhere; }
+
+  /* The saved links */
+  h2 {
+    display: flex; align-items: center; gap: .5rem; margin: 1.25rem 0 .75rem;
+    color: var(--muted); font-size: .8rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  }
+  #count { padding: 0 .5rem; border: 1px solid var(--line); border-radius: 99px; letter-spacing: 0; }
+
+  ul { margin: 0; padding: 0; list-style: none; }
+  .link {
+    display: flex; align-items: center; gap: .85rem; margin-bottom: .5rem; padding: .7rem .7rem .7rem .8rem;
+    background: var(--card); border: 1px solid var(--line); border-radius: .9rem;
+  }
+  .link.new { animation: arrive .35s ease-out; }
+  @keyframes arrive { from { opacity: 0; transform: translateY(-.5rem) scale(.98); } }
+  @media (prefers-reduced-motion: reduce) { .link.new { animation: none; } }
+
+  .avatar {
+    flex: none; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: .7rem;
+    color: #fff; font-size: 1.1rem; font-weight: 700; text-transform: uppercase;
+  }
+  .link a { flex: 1; min-width: 0; color: inherit; text-decoration: none; border-radius: .3rem; }
+  .title, .address { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .title { font-weight: 600; }
+  .address { color: var(--muted); font-size: .85rem; }
+  .link a:hover .title { color: var(--accent); }
+  .remove {
+    flex: none; width: 2rem; height: 2rem; border: 0; border-radius: .5rem;
+    background: none; color: var(--muted); font: inherit; font-size: 1.1rem; line-height: 1; cursor: pointer;
+  }
+  .remove:hover { color: var(--danger); background: color-mix(in srgb, var(--danger) 12%, transparent); }
+
+  #empty { margin: 0; padding: 2rem 1rem; border: 1px dashed var(--line); border-radius: .9rem; color: var(--muted); text-align: center; }
+
+  /* What each part of the server did */
+  footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
+  footer dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem 1.5rem; margin: 0 0 1.25rem; }
+  footer dt { color: var(--text); }
+  footer dd { margin: .2rem 0 0; }
+  footer p { margin: 0; }
+
+  /* Small screens */
+  @media (max-width: 34rem) {
+    main { padding-top: 2.5rem; }
+    footer dl { grid-template-columns: 1fr; }
+  }
+</style>
+
+<main>
+  <h1>
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--accent)"/><path d="M11 8h10v16l-5-3.6-5 3.6z" fill="var(--on-accent)"/></svg>
+    Linkbox
+  </h1>
+  <p class="lead">Paste the address of a page. The server visits it, reads its title and saves the link.</p>
+
+  <form>
+    <input name="url" placeholder="go.dev" aria-label="Address of a page" required autofocus
+           inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <button>Save</button>
+  </form>
+
+  <p class="examples">
+    Try
+    <button type="button">go.dev</button>
+    <button type="button">example.com</button>
+    <button type="button">en.wikipedia.org/wiki/Gopher</button>
+    <button type="button">developers.cloudflare.com/workers</button>
+  </p>
+
+  <p id="message" role="status"></p>
+
+  <h2>Saved <span id="count">0</span></h2>
+  <ul id="links"></ul>
+  <p id="empty" hidden>Nothing saved yet. Paste an address above, or click one of the examples.</p>
+
+  <footer>
+    <dl>
+      <div><dt><code>deps.Server</code></dt><dd>answered this page and every click on it.</dd></div>
+      <div><dt><code>deps.HTTPClient</code></dt><dd>visited each page to read its title.</dd></div>
+      <div><dt><code>deps.DatabaseHub</code></dt><dd>keeps the links in a SQLite database.</dd></div>
+    </dl>
+    <p>The whole server is <code>sandbox/sandboxmain.go</code>, and this page is <code>sandbox/index.html</code>.</p>
+  </footer>
+</main>
+
+<!-- One saved link. The script below copies it and fills it in, once per link. -->
+<template>
+  <li class="link">
+    <span class="avatar" aria-hidden="true"></span>
+    <a target="_blank" rel="noopener noreferrer">
+      <span class="title"></span>
+      <span class="address"></span>
+    </a>
+    <button class="remove" type="button" title="Remove" aria-label="Remove">✕</button>
+  </li>
+</template>
+
+<script>
+  const form = document.querySelector("form");
+  const input = form.querySelector("input");
+  const save = form.querySelector("button");
+  const message = document.querySelector("#message");
+  const list = document.querySelector("#links");
+  const template = document.querySelector("template");
+
+  // Calls /api/links. Whatever the method, the server responds with the list
+  // of links as it is now, and the page draws it again.
+  // Returns true if it worked; if not, shows what the server said.
+  async function api(method, path = "", body) {
+    message.textContent = "";
+    try {
+      const response = await fetch("/api/links" + path, { method, body: body && JSON.stringify(body) });
+      if (!response.ok) throw new Error(await response.text());
+      draw(await response.json());
+      return true;
+    } catch (error) {
+      message.textContent = error.message;
+      return false;
+    }
+  }
+
+  // Draws the list: [{ id, url, title }, ...]
+  function draw(links) {
+    list.replaceChildren(...links.map((link) => {
+      const item = template.content.cloneNode(true);
+      const address = link.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""); // "go.dev/doc"
+      const host = address.split("/")[0];
+
+      item.querySelector(".avatar").textContent = host[0];
+      item.querySelector(".avatar").style.background = `oklch(52% 0.13 ${hue(host)})`;
+      item.querySelector("a").href = link.url;
+      item.querySelector(".title").textContent = link.title;
+      item.querySelector(".address").textContent = address;
+      item.querySelector(".remove").onclick = () => api("DELETE", "/" + link.id);
+      return item;
+    }));
+    document.querySelector("#count").textContent = links.length;
+    document.querySelector("#empty").hidden = links.length > 0;
+  }
+
+  // A color (0 to 359) for a site: the same host always gets the same one.
+  function hue(host) {
+    let hue = 0;
+    for (const letter of host) hue = (hue * 31 + letter.charCodeAt(0)) % 360;
+    return hue;
+  }
+
+  form.onsubmit = async (event) => {
+    event.preventDefault(); // the script sends the form, not the browser
+    if (save.disabled) return;
+
+    save.disabled = true;
+    save.textContent = "Saving…";
+    if (await api("POST", "", { url: input.value })) {
+      form.reset();
+      list.firstElementChild?.classList.add("new");
+    }
+    save.disabled = false;
+    save.textContent = "Save";
+  };
+
+  for (const example of document.querySelectorAll(".examples button")) {
+    example.onclick = () => {
+      input.value = example.textContent;
+      form.requestSubmit();
+    };
+  }
+
+  api("GET"); // shows what is already saved
+</script>

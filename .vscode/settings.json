@@ -1,0 +1,7 @@
+{
+  // The Go code runs as WebAssembly (GOOS=js GOARCH=wasm); this way the editor
+  // understands engine/worker (which uses syscall/js) without reporting errors.
+  "gopls": {
+    "build.env": { "GOOS": "js", "GOARCH": "wasm" }
+  }
+}

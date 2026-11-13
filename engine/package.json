@@ -1,0 +1,8 @@
+{
+  "name": "engine",
+  "private": true,
+  "description": "JavaScript dependencies of the Worker (Wrangler only).",
+  "devDependencies": {
+    "wrangler": "4.158.0"
+  }
+}
